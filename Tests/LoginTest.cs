@@ -1,50 +1,44 @@
-﻿using NUnit.Framework;
-using PracticeProject.Drivers;
-using PracticeProject.ExcelFiles;
-using PracticeProject.Pages;
+using Cargoflash.nGen.DTD.Automation.Configuration;
+using Cargoflash.nGen.DTD.Automation.Drivers;
+using Cargoflash.nGen.DTD.Automation.Pages;
+using Cargoflash.nGen.DTD.Automation.Utilities;
+using NUnit.Framework;
 using System.Data;
 
-namespace PracticeProject.Tests
+namespace Cargoflash.nGen.DTD.Automation.Tests
 {
-    public class LoginTests : Driver
+    [TestFixture]
+    public sealed class LoginTests : Driver
     {
         [Test]
-        public void LoginTest()
+        public void Login_WithValidCredentials_OpensDashboard()
         {
-            DataTableCollection data=Driver.ReadExcel(ExcelPath.excelFilePath);
-            DataTable loginData = data["Sheet1"];
+            DataTable loginData = ExcelReader.ReadWorksheet(
+                TestSettings.LoginDataPath,
+                "Sheet1",
+                "Username",
+                "Password");
+
+            Assert.That(
+                loginData.Rows.Count,
+                Is.GreaterThan(0),
+                "No login data was found in Sheet1.");
+
             DataRow row = loginData.Rows[0];
-            string username = row["Username"].ToString().Trim();
-            string password = row["Password"].ToString().Trim(); 
+            string username = ExcelReader.GetRequiredText(row, "Username");
+            string password = ExcelReader.GetRequiredText(row, "Password");
 
-            LoginPage loginPage =new LoginPage(driver);
-            loginPage.EnterUsername(username);
-            loginPage.EnterPassword(password);
-            loginPage.ClickLogin(); 
+            LoginPage loginPage = new LoginPage(WebDriver);
+            DashboardPage? dashboardPage = loginPage.Login(username, password);
+
+            Assert.That(
+                dashboardPage,
+                Is.Not.Null,
+                "Login did not complete after three CAPTCHA attempts.");
+            Assert.That(
+                dashboardPage!.IsDisplayed(),
+                Is.True,
+                "The dashboard URL or Dashboard menu was not displayed after login.");
         }
-
-        [Test]
-        [Ignore("Under maintenance: Refactoring the payment gateway integration.")]
-        public void ReadExcelTest()
-        {
-            DataTableCollection data =Driver.ReadExcel(ExcelPath.excelFilePath);
-
-            Console.WriteLine("Total Sheets: " + data.Count);
-
-            DataTable loginData = data["Sheet1"];
-
-            Console.WriteLine("Login Sheet Rows: " + loginData.Rows.Count);
-
-            DataRow row =loginData.Rows[0];
-
-            string username =row["Username"].ToString().Trim();
-
-            string password =row["Password"].ToString().Trim();
-
-            Console.WriteLine("Username: " + username);
-
-            Console.WriteLine("Password successfully read from Excel.");
-        }
-
     }
 }

@@ -1,47 +1,31 @@
-﻿using NUnit.Framework;
+using Cargoflash.nGen.DTD.Automation.Configuration;
+using Cargoflash.nGen.DTD.Automation.Utilities;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using PracticeProject.Utilities;
-using ExcelDataReader;
-using System.Data;
-using System.Text;
 
-namespace PracticeProject.Drivers
+namespace Cargoflash.nGen.DTD.Automation.Drivers
 {
     public abstract class Driver
     {
-        protected IWebDriver driver = null!;
+        protected IWebDriver WebDriver { get; private set; } = null!;
 
         [SetUp]
         public void OpenBrowser()
         {
-            driver = new ChromeDriver();
-
-            driver.Manage().Window.Maximize();
-
-            driver.Navigate().GoToUrl("https://ngend2d-test.cargoflash.com/");
-
-            WaitUtil.WaitForPageLoad(driver);
-        }
-
-        public static DataTableCollection ReadExcel(string filePath)
-        {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            
-            using FileStream stream = File.Open(filePath,FileMode.Open,FileAccess.Read);
-
-            using IExcelDataReader reader =ExcelReaderFactory.CreateReader(stream);
-
-            DataSet result =reader.AsDataSet(new ExcelDataSetConfiguration
+            ChromeOptions options = new ChromeOptions();
+            if (TestSettings.Headless)
             {
-                        ConfigureDataTable = (_) =>new ExcelDataTableConfiguration
-                        {
-                                UseHeaderRow = true
-                        }
-                    }
-                );
+                options.AddArgument("--headless=new");
+            }
 
-            return result.Tables;
+            WebDriver = new ChromeDriver(options);
+            WebDriver.Manage().Window.Maximize();
+            WebDriver.Navigate().GoToUrl(TestSettings.BaseUrl);
+
+            WaitUtil.WaitForPageLoad(WebDriver);
         }
+
+   
     }
 }

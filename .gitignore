@@ -5,4 +5,7 @@ TestResults/
 
 *.user
 *.suo
-*.logExcelFiles/LoginData.xlsx
+*.log
+
+# Local credentials and test data
+ExcelFiles/LoginData.xlsx

@@ -5,10 +5,11 @@
 This repository contains one .NET 8 NUnit test project for the Cargoflash nGen DTD web application.
 
 - `Drivers/`: WebDriver lifecycle and browser startup code.
+- `Configuration/`: Environment-driven URL, timeout, headless, and data-path settings.
 - `Pages/`: Selenium page objects, such as `LoginPage.cs`.
 - `Tests/`: NUnit test fixtures and test cases.
-- `Utilities/`: Shared helpers, including explicit waits.
-- `ExcelFiles/`: Excel-backed test data and its path configuration.
+- `Utilities/`: Shared explicit-wait and Excel-reading helpers.
+- `ExcelFiles/`: Local Excel-backed test data; credential workbooks are ignored by Git.
 - `Cargoflash.nGen.DTD.Automation.csproj`: NuGet dependencies and test-project settings.
 
 Treat `.vs/`, `bin/`, `obj/`, and `TestResults/` as generated output. Do not add new source files under these directories.
@@ -26,6 +27,8 @@ dotnet format --verify-no-changes
 ```
 
 `restore` downloads packages, `build` compiles the solution, and `test` runs NUnit tests. Use `--filter` while developing a focused test. The Selenium tests require Chrome, access to the configured test environment, and valid test credentials.
+
+Use `DTD_BASE_URL`, `DTD_TIMEOUT_SECONDS`, and `DTD_HEADLESS` to override defaults without editing source code. For example: `$env:DTD_HEADLESS = "true"`.
 
 ## Coding Style & Naming Conventions
 
