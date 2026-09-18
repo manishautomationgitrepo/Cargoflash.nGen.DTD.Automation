@@ -8,7 +8,7 @@ using System.Data;
 namespace Cargoflash.nGen.DTD.Automation.Tests
 {
     [TestFixture]
-    public sealed class LoginTests : Driver
+    public class LoginTests : Driver
     {
         [Test]
         public void Login_WithValidCredentials_OpensDashboard()

@@ -10,17 +10,27 @@ namespace Cargoflash.nGen.DTD.Automation.Drivers
     {
         protected IWebDriver WebDriver { get; private set; } = null!;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void OpenBrowser()
         {
             ChromeOptions options = new ChromeOptions();
-            if (TestSettings.Headless)
-            {
-                options.AddArgument("--headless=new");
-            }
 
-            WebDriver = new ChromeDriver(options);
-            WebDriver.Manage().Window.Maximize();
+            options.AddArgument("--start-maximized");
+
+            options.AddArgument("--disable-notifications");
+            options.AddArgument("--disable-popup-blocking");
+
+            ChromeDriverService service =
+                ChromeDriverService.CreateDefaultService();
+
+            service.HideCommandPromptWindow = true;
+
+            WebDriver = new ChromeDriver(
+                service,
+                options,
+                TimeSpan.FromMinutes(2)
+            );
+
             WebDriver.Navigate().GoToUrl(TestSettings.BaseUrl);
 
             WaitUtil.WaitForPageLoad(WebDriver);
