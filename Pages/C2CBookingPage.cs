@@ -1,5 +1,4 @@
 ﻿using Cargoflash.nGen.DTD.Automation.Drivers;
-using Cargoflash.nGen.DTD.Automation.Helpers;
 using Cargoflash.nGen.DTD.Automation.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -36,18 +35,16 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void OpenC2CBooking()
         {
-
-            WaitUtil.WaitForElementToBeClickable(driver, ShipmentMenu).Click();
-            WaitUtil.WaitForElementToBeClickable(driver, C2CBookingMenu).Click();
+            ElementActions.Click(driver, ShipmentMenu); 
+            ElementActions.Click(driver, C2CBookingMenu);
         }
 
         private By switchShipmentFrame => By.Id("iMasterFrame");
 
         public void switchFrameC2CBooking()
         {
-
             ElementActions.SwitchToFrame(driver, switchShipmentFrame);
-            WaitUtil.WaitForElementToBeClickable(driver, NewBookingButton).Click();
+            ElementActions.Click(driver, NewBookingButton);
         }
 
 
@@ -85,8 +82,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void clickAddShipperDetails()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, AddShipperDetails);
-            driver.FindElement(AddShipperDetails).Click();
+            ElementActions.Click(driver, AddShipperDetails);
         }
 
         public void enterShipperName(string shipperName)
@@ -135,8 +131,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void saveShipperDetails()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, saveShipperDetail);
-            driver.FindElement(saveShipperDetail).Click();
+            ElementActions.Click(driver, saveShipperDetail);
         }
 
         // =============================
@@ -179,8 +174,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void clickAddConsigneeDetails()
         {
-            WaitUtil.WaitForElementToBeInvisible(driver, addConsigneeDetailsLink);
-            driver.FindElement(addConsigneeDetailsLink).Click();
+            ElementActions.Click(driver, addConsigneeDetailsLink);
         }
 
         public void enterConsigneeName(String ConsigneeName)
@@ -231,8 +225,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void saveConsigneeDetails()
         {
-            WaitUtil.WaitForElementToBeInvisible(driver, saveConsigneeDetail);
-            driver.FindElement(saveConsigneeDetail).Click();
+            ElementActions.Click(driver, saveConsigneeDetail);
         }
 
         // ==========================================
@@ -293,14 +286,13 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void clickAddDimension()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, AddDimensionLink);
-            driver.FindElement(AddDimensionLink).Click();
+            ElementActions.Click(driver, AddDimensionLink);
         }
 
         public void enterLenght(String Lenght)
         {
             //ElementActions.EnterText(driver, LenghtInput, Lenght);
-            IWebElement LenghtField = WaitUtil.WaitForElementToBeVisible(driver, LenghtInput);
+            IWebElement LenghtField = WaitUtils.WaitForElementToBeVisible(driver, LenghtInput);
             LenghtField.SendKeys(Lenght);
 
         }
@@ -308,14 +300,14 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         public void enterWidth(String Width)
         {
             //ElementActions.EnterText(driver, WidthInput, Width);
-            IWebElement WidthField = WaitUtil.WaitForElementToBeVisible(driver, WidthInput);
+            IWebElement WidthField = WaitUtils.WaitForElementToBeVisible(driver, WidthInput);
             WidthField.SendKeys(Width);
         }
 
         public void enterHeight(String Height)
         {
             //ElementActions.EnterText(driver, HeightInput, Height);
-            IWebElement HeightField = WaitUtil.WaitForElementToBeVisible(driver, HeightInput);
+            IWebElement HeightField = WaitUtils.WaitForElementToBeVisible(driver, HeightInput);
             HeightField.SendKeys(Height);
 
         }
@@ -323,14 +315,13 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         public void enterPerPcsGrossWeight(String GrossWeight)
         {
             //ElementActions.EnterText(driver, PerPcGrossWeightInput, GrossWeight);
-            IWebElement PerPiecesGrossWeightField = WaitUtil.WaitForElementToBeVisible(driver, PerPcGrossWeightInput);
+            IWebElement PerPiecesGrossWeightField = WaitUtils.WaitForElementToBeVisible(driver, PerPcGrossWeightInput);
             PerPiecesGrossWeightField.SendKeys(GrossWeight);
         }
 
         public void saveAddDimension()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, SaveDimension);
-            driver.FindElement(SaveDimension).Click();
+            ElementActions.Click(driver, SaveDimension);
         }
 
         public void enterItemDesription(String ItemDescription)
@@ -354,20 +345,17 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void clickGetRate()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, GetRateLink);
-            driver.FindElement(GetRateLink).Click();
+            ElementActions.Click(driver, GetRateLink);  
         }
 
         public void saveGetRate()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, SaveExitRate);
-            driver.FindElement(SaveExitRate).Click();
+            ElementActions.Click(driver, SaveExitRate);
         }
 
         public void clickTermsAndConditions()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, TermsAndConditionsChk);
-            driver.FindElement(TermsAndConditionsChk).Click();
+            ElementActions.Click(driver, TermsAndConditionsChk);
         }
 
         // ===========================
@@ -382,8 +370,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void clickMandatoryDeclaration()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, MandatoryDeclaration);
-            driver.FindElement(MandatoryDeclaration).Click();
+            ElementActions.Click(driver, MandatoryDeclaration);
         }
 
         // ===========================
@@ -392,14 +379,32 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         private By SaveBooking => By.XPath("//body[1]/form[1]/div[3]/table[1]/tbody[1]/tr[3]/th[1]/div[1]/table[1]/tbody[1]/tr[2]/td[1]/input[1]");
 
+        private By SuccessMessage => By.XPath("//div[@class='cfMessage cfMessage-success']");
+
         // ===========================
         // Save Booking Methods
         // ===========================
 
-        public void clickSaveBooking()
+        public string ClickSaveBookingAndGetShipmentNo()
         {
-            WaitUtil.WaitForElementToBeClickable(driver, SaveBooking);
-            driver.FindElement(SaveBooking).Click();
+            ElementActions.Click(driver, SaveBooking);
+
+            IWebElement message= WaitUtils.WaitForElementToBeVisible(driver, SuccessMessage);
+
+            string successMessage =message.Text.Trim();
+
+            int startIndex = successMessage.IndexOf("[") + 1;
+
+            int endIndex = successMessage.IndexOf("]");
+
+            if (startIndex <= 0 || endIndex == -1 || endIndex <= startIndex)
+            {
+                throw new Exception($"Shipment number not found in success message: {successMessage}");
+            }
+            string shipmentNumber = successMessage.Substring(startIndex, endIndex - startIndex);
+
+            return shipmentNumber;
+
         }
     }
 }

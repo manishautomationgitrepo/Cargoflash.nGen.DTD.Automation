@@ -33,7 +33,7 @@ namespace Cargoflash.nGen.DTD.Automation.Drivers
 
             WebDriver.Navigate().GoToUrl(TestSettings.BaseUrl);
 
-            WaitUtil.WaitForPageLoad(WebDriver);
+            WaitUtils.WaitForPageLoad(WebDriver);
         }
 
    

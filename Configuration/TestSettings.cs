@@ -25,8 +25,8 @@ namespace Cargoflash.nGen.DTD.Automation.Configuration
                 out bool headless)
             && headless;
 
-        public static string LoginDataPath =>
-            Path.Combine(AppContext.BaseDirectory, "ExcelFiles", "LoginData.xlsx");
+        public static string TestDataPath =>
+            Path.Combine(AppContext.BaseDirectory, "TestData", "TestData.xlsx");
 
         public static string TessDataPath =>
             Path.Combine(AppContext.BaseDirectory, "tessdata");

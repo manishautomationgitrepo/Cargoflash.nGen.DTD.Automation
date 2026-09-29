@@ -14,8 +14,8 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
         public void Login_WithValidCredentials_OpensDashboard()
         {
             DataTable loginData = ExcelReader.ReadWorksheet(
-                TestSettings.LoginDataPath,
-                "Sheet1",
+                TestSettings.TestDataPath,
+                "Consolidator_Login",
                 "Username",
                 "Password");
 

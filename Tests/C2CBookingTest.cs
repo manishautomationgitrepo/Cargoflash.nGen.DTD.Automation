@@ -17,20 +17,29 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
         [Test]
         public void C2C_booking()
         {
+
+            // =====================================
+            // LOGIN DATA
+            // =====================================
+
             DataTable loginData = ExcelReader.ReadWorksheet(
-              TestSettings.LoginDataPath,
-              "Sheet1",
+              TestSettings.TestDataPath,
+              "Consolidator_Login",
               "Username",
               "Password");
 
             Assert.That(
                 loginData.Rows.Count,
                 Is.GreaterThan(0),
-                "No login data was found in Sheet1.");
+                "No login data was found in Consolidator_Login sheet.");
 
-            DataRow row = loginData.Rows[0];
-            string username = ExcelReader.GetRequiredText(row, "Username");
-            string password = ExcelReader.GetRequiredText(row, "Password");
+            DataRow loginRow = loginData.Rows[0];
+            string username = ExcelReader.GetRequiredText(loginRow, "Username");
+            string password = ExcelReader.GetRequiredText(loginRow, "Password");
+
+            // =====================================
+            // LOGIN
+            // =====================================
 
             LoginPage loginPage = new LoginPage(WebDriver);
             DashboardPage? dashboardPage = loginPage.Login(username, password);
@@ -44,53 +53,94 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
                 Is.True,
                 "The dashboard URL or Dashboard menu was not displayed after login.");
 
+            // =====================================
+            // C2C BOOKING DATA
+            // =====================================
+
+            DataTable bookingData = ExcelReader.ReadWorksheet(
+                TestSettings.TestDataPath,
+                "C2C_Booking");
+
+            Assert.That(
+                bookingData.Rows.Count,
+                Is.GreaterThan(0),
+                "No C2C Booking data was found in C2C_Booking sheet.");
+
+            DataRow bookingRow =bookingData.Rows[0];
+
+            // =====================================
+            // C2C BOOKING
+            // =====================================
 
             C2CBookingPage c2cbooking = new C2CBookingPage(WebDriver);
 
             c2cbooking.OpenC2CBooking();
             c2cbooking.switchFrameC2CBooking();
+
+            // =====================================
+            // SHIPPER DETAILS
+            // =====================================
+
             c2cbooking.clickAddShipperDetails();
-            c2cbooking.enterShipperName("Manish");
-            c2cbooking.enterShipperLastName("Arya");
-            c2cbooking.enterShipperZipCode("23E23");
-            c2cbooking.enterShipperAddress("Downtown Shanghai");
-            c2cbooking.enterShipperEmailID("manish@gmail.com");
-            c2cbooking.EntershipperMobileNoPrefix("+");
-            c2cbooking.EntershipperMobileNoCode("91");
-            c2cbooking.EntershipperMobileNo("4875643323");
+            c2cbooking.enterShipperName(ExcelReader.GetRequiredText(bookingRow, "ShipperName"));
+            c2cbooking.enterShipperLastName(ExcelReader.GetRequiredText(bookingRow, "ShipperLastName"));
+            c2cbooking.enterShipperZipCode(ExcelReader.GetRequiredText(bookingRow, "ShipperZipCode"));
+            c2cbooking.enterShipperAddress(ExcelReader.GetRequiredText(bookingRow, "ShipperAddress"));
+            c2cbooking.enterShipperEmailID(ExcelReader.GetRequiredText(bookingRow, "ShipperEmail"));
+            c2cbooking.EntershipperMobileNoPrefix(ExcelReader.GetRequiredText(bookingRow, "ShipperPrefix"));
+            c2cbooking.EntershipperMobileNoCode(ExcelReader.GetRequiredText(bookingRow, "ShipperCountryCode"));
+            c2cbooking.EntershipperMobileNo(ExcelReader.GetRequiredText(bookingRow, "ShipperMobileNo"));
             c2cbooking.saveShipperDetails();
 
+            // =====================================
+            // CONSIGNEE DETAILS
+            // =====================================
+
             c2cbooking.clickAddConsigneeDetails();
-            c2cbooking.enterConsigneeName("Manish Addis");
-            c2cbooking.selectConsigneeCountry("ET-ETHIOPIA");
-            c2cbooking.selectConsigneeCity("ADDIS ABABA [ADD]");
-            c2cbooking.selectConsigneeZipcode("1000");
-            c2cbooking.enterConsigneeAddress("Downtown Addis");
-            c2cbooking.enterConsigneeEmailID("manish.addis@gmail.com");
-            c2cbooking.selectConsigneeMobilePrefixSNo("+");
-            c2cbooking.enterConsigneeMobileCountryCode("91");
-            c2cbooking.enterConsigneeMobileNo("5647647453");
+            c2cbooking.enterConsigneeName(ExcelReader.GetRequiredText(bookingRow, "ConsigneeName"));
+            c2cbooking.selectConsigneeCountry(ExcelReader.GetRequiredText(bookingRow, "ConsigneeCountry"));
+            c2cbooking.selectConsigneeCity(ExcelReader.GetRequiredText(bookingRow, "ConsigneeCity"));
+            c2cbooking.selectConsigneeZipcode(ExcelReader.GetRequiredText(bookingRow, "ConsigneeZipCode"));
+            c2cbooking.enterConsigneeAddress(ExcelReader.GetRequiredText(bookingRow, "ConsigneeAddress"));
+            c2cbooking.enterConsigneeEmailID(ExcelReader.GetRequiredText(bookingRow, "ConsigneeEmail"));
+            c2cbooking.selectConsigneeMobilePrefixSNo(ExcelReader.GetRequiredText(bookingRow, "ConsigneePrefix"));
+            c2cbooking.enterConsigneeMobileCountryCode(ExcelReader.GetRequiredText(bookingRow, "ConsigneeCountryCode"));
+            c2cbooking.enterConsigneeMobileNo(ExcelReader.GetRequiredText(bookingRow, "ConsigneeMobileNo"));
             c2cbooking.saveConsigneeDetails();
 
-            c2cbooking.selectServiceType("EXPRESS");
-            c2cbooking.selectProductType("DOOR TO DOOR - [D2D]");
-            c2cbooking.selectCommodity("00001-DTD");
-            c2cbooking.enterPieces("1");
+            // =====================================
+            // SHIPMENT DETAILS
+            // =====================================
+
+            c2cbooking.selectServiceType(ExcelReader.GetRequiredText(bookingRow, "ServiceType"));
+            c2cbooking.selectProductType(ExcelReader.GetRequiredText(bookingRow, "ProductType"));
+            c2cbooking.selectCommodity(ExcelReader.GetRequiredText(bookingRow, "Commodity"));
+            c2cbooking.enterPieces(ExcelReader.GetRequiredText(bookingRow, "Pieces"));
+
+            // =====================================
+            // DIMENSION DETAILS
+            // =====================================
+
             c2cbooking.clickAddDimension();
-            c2cbooking.enterLenght("10");
-            c2cbooking.enterWidth("10");
-            c2cbooking.enterHeight("10");
-            c2cbooking.enterPerPcsGrossWeight("10");
+            c2cbooking.enterLenght(ExcelReader.GetRequiredText(bookingRow, "Length"));
+            c2cbooking.enterWidth(ExcelReader.GetRequiredText(bookingRow, "Width"));
+            c2cbooking.enterHeight(ExcelReader.GetRequiredText(bookingRow, "Height"));
+            c2cbooking.enterPerPcsGrossWeight(ExcelReader.GetRequiredText(bookingRow, "GrossWeight"));
             c2cbooking.saveAddDimension();
 
-            c2cbooking.enterItemDesription("Testing");
+            // =====================================
+            // RATE & SAVE BOOKING
+            // =====================================
+
+            c2cbooking.enterItemDesription(ExcelReader.GetRequiredText(bookingRow, "ItemDescription"));
             c2cbooking.clickGetRate();
             c2cbooking.saveGetRate();
             c2cbooking.clickTermsAndConditions();
             c2cbooking.clickMandatoryDeclaration();
-            c2cbooking.clickSaveBooking();
 
+            string shipmentNo = c2cbooking.ClickSaveBookingAndGetShipmentNo();
 
+            Console.WriteLine($"Generated Shipment No: {shipmentNo}");
 
         }
     }

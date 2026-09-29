@@ -5,11 +5,11 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 {
     public class LoginPage
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver driver;
 
         public LoginPage(IWebDriver driver)
         {
-            _driver = driver;
+            this.driver = driver;
         }
 
         private By UsernameTextbox => By.Id("txtUser");
@@ -29,25 +29,17 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         public void EnterUsername(string username)
         {
-            IWebElement usernameElement =
-                WaitUtil.WaitForElementToBeVisible(_driver, UsernameTextbox);
-            usernameElement.Clear();
-            usernameElement.SendKeys(username);
+            ElementActions.EnterText(driver, UsernameTextbox, username);
         }
 
         public void EnterPassword(string password)
         {
-            IWebElement passwordElement =
-                WaitUtil.WaitForElementToBeVisible(_driver, PasswordTextbox);
-            passwordElement.Clear();
-            passwordElement.SendKeys(password);
+            ElementActions.EnterText(driver, PasswordTextbox, password);
         }
 
         public void ClickLogin()
         {
-            IWebElement loginButton =
-                WaitUtil.WaitForElementToBeClickable(_driver, LoginButton);
-            loginButton.Click();
+            ElementActions.Click(driver, LoginButton);
         }
 
         public DashboardPage? Login(string username, string password, int maximumAttempts = 3)
@@ -68,7 +60,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
                 if (WaitForLoginAttemptResult() == LoginAttemptResult.Succeeded)
                 {
-                    return new DashboardPage(_driver);
+                    return new DashboardPage(driver);
                 }
             }
 
@@ -87,14 +79,14 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
             for (int attempt = 1; attempt <= maximumAttempts; attempt++)
             {
                 IWebElement imageElement =
-                    WaitUtil.WaitForElementToBeVisible(_driver, CaptchaImage);
+                    WaitUtils.WaitForElementToBeVisible(driver, CaptchaImage);
                 byte[] imageBytes = CaptureElementScreenshot(imageElement);
 
                 try
                 {
                     int answer = CaptchaSolver.CalculateAnswer(imageBytes);
                     IWebElement captchaTextbox =
-                        WaitUtil.WaitForElementToBeVisible(_driver, CaptchaTextbox);
+                        WaitUtils.WaitForElementToBeVisible(driver, CaptchaTextbox);
                     captchaTextbox.Clear();
                     captchaTextbox.SendKeys(answer.ToString());
                     return;
@@ -123,11 +115,11 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         private void RefreshCaptcha(byte[] previousImage)
         {
             IWebElement refreshButton =
-                WaitUtil.WaitForElementToBeClickable(_driver, RefreshCaptchaButton);
+                WaitUtils.WaitForElementToBeClickable(driver, RefreshCaptchaButton);
             refreshButton.Click();
 
             string previousImageText = Convert.ToBase64String(previousImage);
-            WaitUtil.WaitForCondition(_driver, currentDriver =>
+            WaitUtils.WaitForCondition(driver, currentDriver =>
             {
                 IWebElement refreshedImage = currentDriver.FindElement(CaptchaImage);
                 byte[] refreshedImageBytes = CaptureElementScreenshot(refreshedImage);
@@ -139,7 +131,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         {
             LoginAttemptResult result = LoginAttemptResult.Pending;
 
-            WaitUtil.WaitForCondition(_driver, currentDriver =>
+            WaitUtils.WaitForCondition(driver, currentDriver =>
             {
                 DashboardPage dashboardPage = new DashboardPage(currentDriver);
                 if (dashboardPage.IsCurrentPage())

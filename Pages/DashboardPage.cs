@@ -5,11 +5,11 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 {
     public class DashboardPage
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver driver;
 
         public DashboardPage(IWebDriver driver)
         {
-            _driver = driver;
+            this.driver = driver;
         }
 
         private By DashboardMenu => By.XPath(
@@ -19,8 +19,8 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         {
             try
             {
-                return WaitUtil.WaitForCondition(
-                    _driver,
+                return WaitUtils.WaitForCondition(
+                    driver,
                     currentDriver => IsDashboardUrl(currentDriver.Url) &&
                         currentDriver.FindElements(DashboardMenu)
                             .Any(element => element.Displayed));
@@ -33,8 +33,8 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
         internal bool IsCurrentPage()
         {
-            return IsDashboardUrl(_driver.Url) &&
-                _driver.FindElements(DashboardMenu)
+            return IsDashboardUrl(driver.Url) &&
+                driver.FindElements(DashboardMenu)
                     .Any(element => element.Displayed);
         }
 
