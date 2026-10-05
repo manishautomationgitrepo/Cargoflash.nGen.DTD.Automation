@@ -10,43 +10,41 @@ using System.Threading.Tasks;
 
 namespace Cargoflash.nGen.DTD.Automation.Pages
 {
-    public class C2CBookingPage
+    public class BookingPage
     {
         private readonly IWebDriver driver;
 
-        public C2CBookingPage(IWebDriver driver)
+        public BookingPage(IWebDriver driver)
         {
             this.driver = driver;
         }
 
-        // =========================
-        // Navigation Locators
-        // =========================
-
-        private By ShipmentMenu => By.XPath("//span[normalize-space()='Shipment']");
-
-        private By C2CBookingMenu => By.XPath("//a[normalize-space()='C2C-Booking']");
-
         private By NewBookingButton => By.XPath("//input[@value='New Booking']");
 
-        // =========================
-        // Navigation Method
-        // =========================
-
-        public void OpenC2CBooking()
+        public void clickNewBookingBtn()
         {
-            ElementActions.Click(driver, ShipmentMenu); 
-            ElementActions.Click(driver, C2CBookingMenu);
-        }
-
-        private By switchShipmentFrame => By.Id("iMasterFrame");
-
-        public void switchFrameC2CBooking()
-        {
-            ElementActions.SwitchToFrame(driver, switchShipmentFrame);
             ElementActions.Click(driver, NewBookingButton);
         }
 
+        // =============================
+        // Customer Name/ID Locators
+        // =============================
+
+        private By CustomerIDSelfInput => By.Id("Text_CustomerIDSelf");
+        private By CustomerIDSelflist => By.Id("Text_CustomerIDSelf-list");
+        private By CustomerIDSelfOption => By.XPath("//div[@id='Text_CustomerIDSelf-list']//li");
+
+        // =============================
+        // Customer Name/ID Selecting Method...
+        // =============================
+
+        public void selectingCustomerName(String CustomerName)
+        {
+
+            ElementActions.SelectFromAutoComplete(driver, CustomerIDSelfInput, CustomerIDSelflist, CustomerIDSelfOption,
+                    CustomerName);
+
+        }
 
         // =============================
         // Shipper Information Locators
@@ -74,6 +72,8 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         private By txtShipperMobileNo => By.Id("ShipperMobileNo");
 
         private By saveShipperDetail => By.XPath("//input[@name='Saveshipper']");
+
+        private By ShipperCustomRegNoInput => By.Id("ShipperCustomRegNo");
 
 
         // ===========================
@@ -134,6 +134,11 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
             ElementActions.Click(driver, saveShipperDetail);
         }
 
+        public void EnterShipperCustomRegNo(String ShipperCustomRegNo)
+        {
+            ElementActions.EnterText(driver, ShipperCustomRegNoInput, ShipperCustomRegNo);
+        }
+
         // =============================
         // Consignee Information Locators
         // =============================
@@ -167,6 +172,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         private By consigneeMobileNoInput => By.Id("ConsigneeMobileNo");
         private By saveConsigneeDetail => By.XPath("//input[@name='consignee']");
 
+        private By ConsigneeCustomRegNoInput => By.Id("ConsigneeCustomRegNo");
 
         // ===========================
         // Consignee Information Methods
@@ -227,6 +233,12 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         {
             ElementActions.Click(driver, saveConsigneeDetail);
         }
+
+        public void EnterConsigneeCustomRegNo(String ConsigneeCustomRegNo)
+        {
+            ElementActions.EnterText(driver, ConsigneeCustomRegNoInput, ConsigneeCustomRegNo);
+        }
+
 
         // ==========================================
         // Package and Shipment Information Locators

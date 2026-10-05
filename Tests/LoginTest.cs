@@ -4,6 +4,7 @@ using Cargoflash.nGen.DTD.Automation.Pages;
 using Cargoflash.nGen.DTD.Automation.Utilities;
 using NUnit.Framework;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cargoflash.nGen.DTD.Automation.Tests
 {
@@ -11,34 +12,21 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
     public class LoginTests : Driver
     {
         [Test]
-        public void Login_WithValidCredentials_OpensDashboard()
+        public void Verify_LoginTest()
         {
-            DataTable loginData = ExcelReader.ReadWorksheet(
-                TestSettings.TestDataPath,
-                "Consolidator_Login",
-                "Username",
-                "Password");
+            DataTable loginData =ExcelReader.GetSheetData(TestSettings.TestDataPath,"Consolidator_Login");
 
-            Assert.That(
-                loginData.Rows.Count,
-                Is.GreaterThan(0),
-                "No login data was found in Sheet1.");
+            Assert.That(loginData.Rows.Count,Is.GreaterThan(0),"No login data found in Consolidator_Login sheet.");
 
-            DataRow row = loginData.Rows[0];
-            string username = ExcelReader.GetRequiredText(row, "Username");
-            string password = ExcelReader.GetRequiredText(row, "Password");
+            string username = loginData.Rows[0]["Username"].ToString().Trim();
+
+            string password = loginData.Rows[0]["Password"].ToString().Trim();
 
             LoginPage loginPage = new LoginPage(WebDriver);
             DashboardPage? dashboardPage = loginPage.Login(username, password);
 
-            Assert.That(
-                dashboardPage,
-                Is.Not.Null,
-                "Login did not complete after three CAPTCHA attempts.");
-            Assert.That(
-                dashboardPage!.IsDisplayed(),
-                Is.True,
-                "The dashboard URL or Dashboard menu was not displayed after login.");
+            Assert.That(dashboardPage,Is.Not.Null,"Login did not complete after three CAPTCHA attempts.");
+            Assert.That(dashboardPage!.IsDisplayed(),Is.True,"The dashboard URL or Dashboard menu was not displayed after login.");
         }
     }
 }

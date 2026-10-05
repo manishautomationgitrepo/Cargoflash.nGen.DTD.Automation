@@ -22,20 +22,13 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
             // LOGIN DATA
             // =====================================
 
-            DataTable loginData = ExcelReader.ReadWorksheet(
-              TestSettings.TestDataPath,
-              "Consolidator_Login",
-              "Username",
-              "Password");
+            DataTable loginData = ExcelReader.GetSheetData(TestSettings.TestDataPath, "Consolidator_Login");
 
-            Assert.That(
-                loginData.Rows.Count,
-                Is.GreaterThan(0),
-                "No login data was found in Consolidator_Login sheet.");
+            Assert.That(loginData.Rows.Count, Is.GreaterThan(0), "No login data found in Consolidator_Login sheet.");
 
-            DataRow loginRow = loginData.Rows[0];
-            string username = ExcelReader.GetRequiredText(loginRow, "Username");
-            string password = ExcelReader.GetRequiredText(loginRow, "Password");
+            string username = loginData.Rows[0]["Username"].ToString().Trim();
+
+            string password = loginData.Rows[0]["Password"].ToString().Trim();
 
             // =====================================
             // LOGIN
@@ -44,45 +37,34 @@ namespace Cargoflash.nGen.DTD.Automation.Tests
             LoginPage loginPage = new LoginPage(WebDriver);
             DashboardPage? dashboardPage = loginPage.Login(username, password);
 
-            Assert.That(
-                dashboardPage,
-                Is.Not.Null,
-                "Login did not complete after three CAPTCHA attempts.");
-            Assert.That(
-                dashboardPage!.IsDisplayed(),
-                Is.True,
-                "The dashboard URL or Dashboard menu was not displayed after login.");
+            Assert.That(dashboardPage,Is.Not.Null,"Login did not complete after three CAPTCHA attempts.");
+            Assert.That(dashboardPage!.IsDisplayed(),Is.True,"The dashboard URL or Dashboard menu was not displayed after login.");
 
             // =====================================
             // C2C BOOKING DATA
             // =====================================
 
-            DataTable bookingData = ExcelReader.ReadWorksheet(
-                TestSettings.TestDataPath,
-                "C2C_Booking");
+            DataTable C2C_BookingData = ExcelReader.GetSheetData(TestSettings.TestDataPath, "C2C_Booking");
 
-            Assert.That(
-                bookingData.Rows.Count,
-                Is.GreaterThan(0),
-                "No C2C Booking data was found in C2C_Booking sheet.");
+            Assert.That(C2C_BookingData.Rows.Count, Is.GreaterThan(0), "No C2C Booking data was found in C2C_Booking sheet.");
 
-            DataRow bookingRow =bookingData.Rows[0];
+            DataRow bookingRow = C2C_BookingData.Rows[0];
 
             // =====================================
             // C2C BOOKING
             // =====================================
+            MenuPage menuPage = new MenuPage(WebDriver);
+            menuPage.OpenC2CBooking();
 
-            C2CBookingPage c2cbooking = new C2CBookingPage(WebDriver);
-
-            c2cbooking.OpenC2CBooking();
-            c2cbooking.switchFrameC2CBooking();
+            BookingPage c2cbooking = new BookingPage(WebDriver);
+            c2cbooking.clickNewBookingBtn();
 
             // =====================================
             // SHIPPER DETAILS
             // =====================================
 
             c2cbooking.clickAddShipperDetails();
-            c2cbooking.enterShipperName(ExcelReader.GetRequiredText(bookingRow, "ShipperName"));
+            c2cbooking.enterShipperName(ExcelReader.GetRequiredText(bookingRow, "ShipperFirstName"));
             c2cbooking.enterShipperLastName(ExcelReader.GetRequiredText(bookingRow, "ShipperLastName"));
             c2cbooking.enterShipperZipCode(ExcelReader.GetRequiredText(bookingRow, "ShipperZipCode"));
             c2cbooking.enterShipperAddress(ExcelReader.GetRequiredText(bookingRow, "ShipperAddress"));

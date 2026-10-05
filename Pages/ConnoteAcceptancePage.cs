@@ -16,37 +16,7 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
         {
             this.driver = driver;
         }
-
-        // ==============================================
-        // Locators Navigate to Connote Acceptace Page
-        // ==============================================
-
-        private By HomeIcon => By.CssSelector("img[src='dashboard/images/home-icon.png']");
-        private By OperationMenu => By.XPath("//span[normalize-space()='Operations']");
-        private By ConnoteAcceptanceMenu => By.CssSelector("a[href*='Apps=CONNoteListing']");
-
-        // ==============================================
-        // Methods Navigate to Connote Acceptace Page
-        // ==============================================
-
-        public void OpenConnoteAcceptance()
-        {
-            ElementActions.Click(driver, HomeIcon);
-            ElementActions.Click(driver, OperationMenu);
-            ElementActions.Click(driver, ConnoteAcceptanceMenu);    
-        }
-
-        // ==============================================
-        // Swtich to the Connote Acceptance Frame
-        // ==============================================
-
-        private By switchShipmentFrame => By.Id("iMasterFrame");
-
-        public void switchFrameConnoteAcceptance()
-        {
-            ElementActions.SwitchToFrame(driver, switchShipmentFrame);
-        }
-
+     
         // =========================
         // Locators 
         // =========================
@@ -72,6 +42,68 @@ namespace Cargoflash.nGen.DTD.Automation.Pages
 
 
         private By ArrivedBtn => By.Id("btnArrived");
+
+        private By SuccessMessage => By.XPath("//div[@class='cfMessage cfMessage-success']");
+
+
+        public void ClickArrivedBtn()
+        {
+            ElementActions.Click(driver, ArrivedBtn);
+        }
+
+        public string GetArrivedSuccessMessage()
+        {
+            IWebElement message =WaitUtils.WaitForElementToBeVisible(driver, SuccessMessage);
+
+            return message.Text.Trim();
+        }
+
+        private By PaymentModeField => By.Id("Text_PaymentMode");
+        private By PaymentModeList => By.Id("Text_PaymentMode-list");
+        private By PaymentModeOptions => By.XPath("//div[@id='Text_PaymentMode-list']//li");
+
+        public void selectPaymentOption(string paymentOption)
+        {
+            ElementActions.SelectFromAutoComplete(driver, PaymentModeField, PaymentModeList, PaymentModeOptions, paymentOption);
+        }
+
+        private By PaymentBtn => By.Id("btnPayment");
+
+        public void ClickPaymentBtn()
+        {
+            ElementActions.Click(driver, PaymentBtn);
+        }
+
+        public string GetPaymentSuccessMessage()
+        {
+            IWebElement message = WaitUtils.WaitForElementToBeVisible(driver, SuccessMessage);
+
+            return message.Text.Trim();
+        }
+        private By ReceivedBtn => By.Id("btnReceived");
+
+        public void ClickReceivedBtn()
+        {
+            ElementActions.Click(driver, ReceivedBtn);
+        }
+
+        public string GetReceivedSuccessMessage()
+        {
+            IWebElement message = WaitUtils.WaitForElementToBeVisible(driver, SuccessMessage);
+
+            return message.Text.Trim();
+        }
+
+        private By ConNoteLabel => By.Id("lblConNote");
+
+
+        public string StoreGenerateConnote()
+        {
+            IWebElement connote = WaitUtils.WaitForElementToBeVisible(driver, ConNoteLabel);
+
+            return connote.Text.Trim();
+            
+        }
 
     }
 }

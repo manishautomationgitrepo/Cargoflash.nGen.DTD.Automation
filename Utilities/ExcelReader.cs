@@ -1,60 +1,50 @@
 using ExcelDataReader;
+using System;
 using System.Data;
+using System.IO;
 using System.Text;
 
 namespace Cargoflash.nGen.DTD.Automation.Utilities
 {
     public static class ExcelReader
     {
-        public static DataTable ReadWorksheet(
-            string filePath,
-            string worksheetName,
-            params string[] requiredColumns)
+        public static DataTable GetSheetData(string filePath, string sheetName)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException(
-                    $"Excel test data was not found at '{filePath}'.",
-                    filePath);
-            }
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            using FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
-            using IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
-
-            DataSet workbook = reader.AsDataSet(new ExcelDataSetConfiguration
+            using (FileStream stream = File.Open(filePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite))
             {
-                ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                using (IExcelDataReader reader =ExcelReaderFactory.CreateReader(stream))
                 {
-                    UseHeaderRow = true
-                }
-            });
+                    DataSet result = reader.AsDataSet(new ExcelDataSetConfiguration
+                        {
+                            ConfigureDataTable = _ =>
+                                new ExcelDataTableConfiguration
+                                {
+                                    UseHeaderRow = true
+                                }
+                        });
 
-            DataTable worksheet = workbook.Tables[worksheetName]
-                ?? throw new InvalidDataException(
-                    $"Worksheet '{worksheetName}' was not found in '{filePath}'.");
-
-            foreach (string column in requiredColumns)
-            {
-                if (!worksheet.Columns.Contains(column))
-                {
-                    throw new InvalidDataException(
-                        $"Required column '{column}' was not found in worksheet '{worksheetName}'.");
+                    return result.Tables[sheetName];
                 }
             }
-
-            return worksheet;
         }
 
-        public static string GetRequiredText(DataRow row, string columnName)
+        public static string GetRequiredText(DataRow row,string columnName)
         {
-            string value = row[columnName]?.ToString()?.Trim() ?? string.Empty;
+            if (!row.Table.Columns.Contains(columnName))
+            {
+                throw new ArgumentException(
+                    $"Column '{columnName}' not found in Excel sheet.");
+            }
+
+            string value =row[columnName]?.ToString()?.Trim()
+                ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new InvalidDataException(
-                    $"A value is required in column '{columnName}'.");
+                throw new ArgumentException(
+                    $"Required Excel value is empty for column '{columnName}'.");
             }
 
             return value;
